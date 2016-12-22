@@ -1,0 +1,93 @@
+R Markdown Presentation and Plottly
+========================================================
+author: Jesin Fahad 
+date: 21-December-2016
+autosize: true
+
+First Slide
+========================================================
+
+Plotly is the modern platform for agile business intelligence and data science. Plotly provides online graphing, analytics, and statistics tools for individuals and collaboration, as well as scientific graphing libraries for Python, R, MATLAB, Perl, Julia, Arduino, and REST.
+
+
+Basic Scatter Plot
+========================================================
+```{r,echo=FALSE}
+library(plotly)
+g=plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length)
+htmlwidgets::saveWidget(as.widget(g), file = "demo1.html")
+```
+<iframe src="demo1.html" style="position:absolute;height:100%;width:100%"></iframe>
+
+Plotting Markers and Lines
+========================================================
+```{r,echo=FALSE}
+trace_0 <- rnorm(100, mean = 5)
+trace_1 <- rnorm(100, mean = 0)
+trace_2 <- rnorm(100, mean = -5)
+x <- c(1:100)
+
+data <- data.frame(x, trace_0, trace_1, trace_2)
+
+p <- plot_ly(data, x = ~x) %>%
+  add_trace(y = ~trace_0, name = 'trace 0',mode = 'lines') %>%
+  add_trace(y = ~trace_1, name = 'trace 1', mode = 'lines+markers') %>%
+  add_trace(y = ~trace_2, name = 'trace 2', mode = 'markers')
+htmlwidgets::saveWidget(as.widget(p), file = "demo3.html")
+```
+<iframe src="demo3.html" style="position:absolute;height:100%;width:100%"></iframe>
+
+Plotting with colour grading
+========================================================
+```{r,echo=FALSE}
+library(plotly)
+set.seed(100)
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+p=plot_ly(d, x = ~carat, y = ~price, color = ~carat,
+        size = ~carat, text = ~paste("Clarity: ", clarity))
+htmlwidgets::saveWidget(as.widget(p), file = "demo.html")
+```
+<iframe src="demo.html" style="position:absolute;height:100%;width:100%"></iframe>
+
+3D Scatter Plot 
+========================================================
+```{r,echo=FALSE}
+library(plotly)
+
+data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv")
+
+data_2007 <- data[which(data$year == 2007),]
+data_2007 <- data_2007[order(data_2007$continent, data_2007$country),]
+data_2007$size <- data_2007$pop
+colors <- c('#4AC6B7', '#1972A4', '#965F8A', '#FF7070', '#C61951')
+
+p <- plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, z = ~pop, color = ~continent, size = ~size, colors = colors, 
+             marker = list(symbol = 'circle', sizemode = 'diameter'), sizes = c(5, 150),
+             text = ~paste('Country:', country, '<br>Life Expectancy:', lifeExp, '<br>GDP:', gdpPercap,
+                           '<br>Pop.:', pop)) %>%
+  layout(title = 'Life Expectancy v. Per Capita GDP, 2007',
+         scene = list(xaxis = list(title = 'GDP per capita (2000 dollars)',
+                      gridcolor = 'rgb(255, 255, 255)',
+                      range = c(2.003297660701705, 5.191505530708712),
+                      type = 'log',
+                      zerolinewidth = 1,
+                      ticklen = 5,
+                      gridwidth = 2),
+               yaxis = list(title = 'Life Expectancy (years)',
+                      gridcolor = 'rgb(255, 255, 255)',
+                      range = c(36.12621671352166, 91.72921793264332),
+                      zerolinewidth = 1,
+                      ticklen = 5,
+                      gridwith = 2),
+               zaxis = list(title = 'Population',
+                            gridcolor = 'rgb(255, 255, 255)',
+                            type = 'log',
+                            zerolinewidth = 1,
+                            ticklen = 5,
+                            gridwith = 2)),
+         paper_bgcolor = 'rgb(243, 243, 243)',
+         plot_bgcolor = 'rgb(243, 243, 243)')
+htmlwidgets::saveWidget(as.widget(p), file = "demo4.html")
+```
+<iframe src="demo4.html" style="position:absolute;height:100%;width:100%"></iframe>
+
